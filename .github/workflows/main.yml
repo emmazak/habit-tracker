@@ -2,7 +2,7 @@ name: Habit Tracker Bot
 
 on:
   schedule:
-    - cron: '0 7 * * *'  # каждый день в 9:00 по Германии
+    - cron: '0 9 * * *'  # каждый день в 9:00 по Германии
   workflow_dispatch:
 
 jobs:
