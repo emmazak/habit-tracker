@@ -1,4 +1,4 @@
-name: [Habit Tracker Bot]
+name: "Habit Tracker Bot"
 
 on:
   schedule:
