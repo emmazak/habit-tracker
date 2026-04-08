@@ -2,7 +2,7 @@ name: Habit Tracker Bot
 
 on:
   schedule:
-    - cron: '0 9 * * *'  # каждый день в 9:00 по Германии (UTC+2)
+    - cron: '0 7 * * *'  # каждый день в 9:00 по Германии
   workflow_dispatch:
 
 jobs:
@@ -23,7 +23,7 @@ jobs:
         run: |
           echo "Считываем привычки..."
           HABITS=$(jq -r '.habits[]' config.json | sed 's/^/• /')
-          
+
           echo "habits<<EOF" >> $GITHUB_OUTPUT
           echo "$HABITS" >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
@@ -32,7 +32,7 @@ jobs:
         id: message
         run: |
           MESSAGE="📅 Сегодняшние привычки:\n${{ steps.config.outputs.habits }}\n\nНе забудь выполнить их 💪"
-          
+
           echo "text<<EOF" >> $GITHUB_OUTPUT
           echo -e "$MESSAGE" >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
