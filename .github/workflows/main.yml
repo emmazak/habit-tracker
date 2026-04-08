@@ -1,0 +1,51 @@
+name: Habit Tracker
+
+on:
+  schedule:
+    # Расписание (настройте под свою задачу)
+    # Пример: каждый день в 9:00
+    - cron: '0 9 * * *'
+  workflow_dispatch:  # для ручного запуска
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Загружаем код
+        uses: actions/checkout@v4
+
+      - name: Читаем конфигурацию
+        id: config
+        run: |
+          # Ваш код для чтения config.json
+          # Используйте jq для парсинга JSON
+          sudo apt-get update
+          sudo apt-get install -y jq
+          # Пример чтения:
+          # PROJECT_NAME=$(jq -r '.project_name' config.json)
+          # echo "name=$PROJECT_NAME" >> $GITHUB_OUTPUT
+
+      - name: Генерируем сообщение
+        id: message
+        run: |
+          # Ваш код для генерации сообщения
+          # Сохраните сообщение в файл или переменную
+          MESSAGE="Ваше сообщение здесь"
+          echo "text=$MESSAGE" >> $GITHUB_OUTPUT
+
+      - name: Отправляем в Telegram
+        run: |
+          curl -s -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage" \
+            -d chat_id="${{ secrets.TELEGRAM_CHAT_ID }}" \
+            -d text="${{ steps.message.outputs.text }}"
+
+      - name: Сохраняем историю
+        run: |
+          # Ваш код для сохранения данных в файл
+          # Например, запись в data.json или лог-файл
+          echo "$(date): Запуск выполнен" >> history.log
+          git config user.email "github-actions@github.com"
+          git config user.name "GitHub Actions"
+          git add history.log
+          git commit -m "Обновление истории $(date)" || echo "Нет изменений"
+          git push || echo "Нечего пушить"
